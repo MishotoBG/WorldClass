@@ -4,6 +4,8 @@ import { AppData, Destination, BlogPost, SiteConfig, Stats } from './types';
 export const INITIAL_DESTINATIONS: Destination[] = [
   {
     id: '1',
+    slug: 'santorini-greece',
+    status: 'published',
     name: 'Santorini, Greece',
     region: 'Europe',
     price: 2500,
@@ -20,6 +22,8 @@ export const INITIAL_DESTINATIONS: Destination[] = [
   },
   {
     id: '2',
+    slug: 'kyoto-japan',
+    status: 'published',
     name: 'Kyoto, Japan',
     region: 'Asia',
     price: 3200,
@@ -36,6 +40,8 @@ export const INITIAL_DESTINATIONS: Destination[] = [
   },
   {
     id: '3',
+    slug: 'patagonia-chile',
+    status: 'published',
     name: 'Patagonia, Chile',
     region: 'South America',
     price: 4100,
@@ -52,6 +58,8 @@ export const INITIAL_DESTINATIONS: Destination[] = [
   },
   {
     id: '4',
+    slug: 'maldives',
+    status: 'draft',
     name: 'Maldives',
     region: 'Asia',
     price: 5500,
@@ -71,6 +79,8 @@ export const INITIAL_DESTINATIONS: Destination[] = [
 export const INITIAL_POSTS: BlogPost[] = [
   {
     id: '1',
+    slug: 'hidden-gems-europe',
+    status: 'published',
     title: 'Top 10 Hidden Gems in Europe',
     excerpt: 'Discover the secret spots that tourists often miss when visiting the old continent.',
     date: 'Oct 12, 2023',
@@ -84,6 +94,8 @@ export const INITIAL_POSTS: BlogPost[] = [
   },
   {
     id: '2',
+    slug: 'pack-for-safari',
+    status: 'published',
     title: 'How to Pack for a Safari',
     excerpt: 'Essential gear and clothing tips for your first African adventure.',
     date: 'Sep 28, 2023',
@@ -97,6 +109,8 @@ export const INITIAL_POSTS: BlogPost[] = [
   },
   {
     id: '3',
+    slug: 'eco-tourism-rise',
+    status: 'published',
     title: 'The Rise of Eco-Tourism',
     excerpt: 'Why sustainable travel is becoming the new standard for luxury explorers.',
     date: 'Nov 05, 2023',
@@ -150,6 +164,11 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'nav.login': 'Login',
     'nav.admin': 'Admin Login',
     
+    'about.sub': 'A legacy of luxury and exploration.',
+    'services.sub': 'Exceptional care for your journey.',
+    'blog.sub': 'Inspiring stories from around the globe.',
+    'contact.sub': 'Let us craft your perfect itinerary.',
+
     'footer.about': 'Curating unforgettable journeys for the discerning traveler. Explore the world with elegance and ease.',
     'footer.quickLinks': 'Quick Links',
     'footer.contact': 'Contact',
@@ -185,8 +204,14 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'contact.name_f': 'First Name',
     'contact.name_l': 'Last Name',
     'contact.email': 'Email Address',
+    'contact.phone': 'Phone Number',
     'contact.message': 'Tell us about your dream journey...',
-    'contact.send': 'Send Message'
+    'contact.terms': 'I agree to the Terms & Conditions',
+    'contact.captcha': 'Security Question',
+    'contact.captcha_q': 'What is {a} + {b}?',
+    'contact.send': 'Send Message',
+    'contact.submit_success': 'Message Sent Successfully',
+    'contact.submit_error': 'Please fill all required fields marked with *',
   },
   bg: {
     'nav.home': 'Начало',
@@ -198,6 +223,11 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'nav.login': 'Вход',
     'nav.admin': 'Админ Вход',
     
+    'about.sub': 'Наследство от лукс и изследвания.',
+    'services.sub': 'Изключителна грижа за вашето пътуване.',
+    'blog.sub': 'Вдъхновяващи истории от целия свят.',
+    'contact.sub': 'Нека създадем вашия перфектен маршрут.',
+
     'footer.about': 'Създаваме незабравими пътешествия за взискателния пътешественик. Изследвайте света с елегантност и лекота.',
     'footer.quickLinks': 'Бързи връзки',
     'footer.contact': 'Контакти',
@@ -233,7 +263,13 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'contact.name_f': 'Име',
     'contact.name_l': 'Фамилия',
     'contact.email': 'Имейл Адрес',
+    'contact.phone': 'Телефон',
     'contact.message': 'Разкажете ни за вашето мечтано пътуване...',
-    'contact.send': 'Изпрати Съобщение'
+    'contact.terms': 'Съгласен съм с Общите условия',
+    'contact.captcha': 'Въпрос за сигурност',
+    'contact.captcha_q': 'Колко е {a} + {b}?',
+    'contact.send': 'Изпрати Съобщение',
+    'contact.submit_success': 'Съобщението е изпратено успешно',
+    'contact.submit_error': 'Моля попълнете всички полета маркирани със *',
   }
 };

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { AppData, Destination, BlogPost, PageView } from '../types';
 import { t, l, c } from '../utils/i18n';
+import { PageHeader } from '../components/Layout';
 
 interface PageProps {
   data: AppData;
@@ -9,17 +11,20 @@ interface PageProps {
 }
 
 export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
+  // Filter published only
+  const publishedDestinations = data.destinations.filter(d => d.status === 'published');
+
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center bg-gray-900 overflow-hidden">
+      {/* Hero Section - Kept separate for the specific CTA button and full screen layout */}
+      <section className="relative h-[90vh] flex items-center justify-center bg-gray-900 overflow-hidden">
         <div 
           className="absolute inset-0 z-0 opacity-60 bg-cover bg-center"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2940&auto=format&fit=crop")' }}
         ></div>
         <div className="absolute inset-0 bg-gradient-to-t from-ocean via-transparent to-transparent z-10"></div>
         <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-serif text-white font-bold mb-6 drop-shadow-lg leading-tight">
+          <h1 className="text-5xl md:text-8xl font-serif text-white font-bold mb-6 drop-shadow-lg leading-tight">
             {c(data, 'heroTitle', lang)}
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 mb-10 font-light tracking-wide">
@@ -42,7 +47,7 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
             <div className="w-24 h-1 bg-gold mx-auto"></div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {data.destinations.slice(0, 3).map((dest) => (
+            {publishedDestinations.slice(0, 3).map((dest) => (
               <div key={dest.id} className="group cursor-pointer" onClick={() => navigateTo('DESTINATIONS')}>
                 <div className="relative overflow-hidden h-80 mb-4">
                   <img 
@@ -90,9 +95,12 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
 export const AboutPage: React.FC<PageProps> = ({ data, lang }) => {
   return (
     <div className="bg-white">
-      <div className="py-20 bg-gray-100 text-center">
-        <h1 className="text-5xl font-serif text-ocean">{t('nav.about', lang)}</h1>
-      </div>
+      <PageHeader 
+        title={t('nav.about', lang)} 
+        subtitle={t('about.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop"
+      />
+      
       <div className="container mx-auto px-6 py-16 max-w-4xl">
         <h2 className="text-3xl font-serif text-ocean mb-6">Our Story</h2>
         <p className="text-gray-600 leading-8 mb-12 text-lg">
@@ -126,17 +134,20 @@ export const AboutPage: React.FC<PageProps> = ({ data, lang }) => {
 export const DestinationsPage: React.FC<PageProps> = ({ data, lang }) => {
   const [filter, setFilter] = useState('All');
   
+  const publishedDestinations = data.destinations.filter(d => d.status === 'published');
+
   const filters = ['All', 'Luxury', 'Adventure', 'Cultural', 'Relaxation'];
   const filteredDestinations = filter === 'All' 
-    ? data.destinations 
-    : data.destinations.filter(d => d.type === filter);
+    ? publishedDestinations 
+    : publishedDestinations.filter(d => d.type === filter);
 
   return (
     <div className="bg-white min-h-screen pb-20">
-      <div className="bg-ocean py-16 text-center text-white">
-        <h1 className="text-4xl font-serif mb-4">{t('dest.curated', lang)}</h1>
-        <p className="text-gray-400">{t('dest.sub', lang)}</p>
-      </div>
+      <PageHeader 
+        title={t('dest.curated', lang)} 
+        subtitle={t('dest.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=2940&auto=format&fit=crop"
+      />
 
       <div className="container mx-auto px-6 py-12">
         {/* Filters */}
@@ -190,37 +201,52 @@ export const ServicesPage: React.FC<{lang: string}> = ({ lang }) => {
   ];
 
   return (
-    <div className="py-20 container mx-auto px-6">
-      <h1 className="text-4xl font-serif text-ocean text-center mb-16">{t('services.title', lang)}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        {services.map((s, idx) => (
-          <div key={idx} className="bg-white p-8 text-center border border-gray-100 hover:border-gold transition-colors duration-300">
-            <div className="w-16 h-16 bg-ocean text-gold rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
-              <i className={`fa-solid ${s.icon}`}></i>
+    <div className="bg-white">
+      <PageHeader 
+        title={t('services.title', lang)} 
+        subtitle={t('services.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"
+      />
+      <div className="py-20 container mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {services.map((s, idx) => (
+            <div key={idx} className="bg-white p-8 text-center border border-gray-100 hover:border-gold transition-colors duration-300 group">
+              <div className="w-16 h-16 bg-ocean text-gold rounded-full flex items-center justify-center mx-auto mb-6 text-2xl group-hover:bg-gold group-hover:text-white transition-colors">
+                <i className={`fa-solid ${s.icon}`}></i>
+              </div>
+              <h3 className="text-lg font-bold text-ocean mb-3">{t(s.title, lang)}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{t(s.desc, lang)}</p>
             </div>
-            <h3 className="text-lg font-bold text-ocean mb-3">{t(s.title, lang)}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">{t(s.desc, lang)}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export const BlogPage: React.FC<{ data: AppData; lang: string }> = ({ data, lang }) => {
+  const publishedPosts = data.posts.filter(p => p.status === 'published');
+
   return (
-    <div className="bg-sand min-h-screen py-20">
-      <div className="container mx-auto px-6">
-        <h1 className="text-4xl font-serif text-ocean text-center mb-16">{t('blog.title', lang)}</h1>
+    <div className="bg-sand min-h-screen pb-20">
+      <PageHeader 
+        title={t('blog.title', lang)} 
+        subtitle={t('blog.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2072&auto=format&fit=crop"
+      />
+      
+      <div className="container mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {data.posts.map(post => (
-            <div key={post.id} className="bg-white">
-              <img src={post.image} alt={l(post, 'title', lang)} className="w-full h-56 object-cover" />
+          {publishedPosts.map(post => (
+            <div key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div className="h-56 overflow-hidden">
+                <img src={post.image} alt={l(post, 'title', lang)} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
               <div className="p-8">
                 <p className="text-gold text-xs uppercase tracking-widest mb-2">{post.date}</p>
                 <h3 className="text-xl font-serif text-ocean mb-3 hover:text-gold cursor-pointer transition-colors">{l(post, 'title', lang)}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">{l(post, 'excerpt', lang)}</p>
-                <span className="text-ocean text-xs font-bold uppercase tracking-widest border-b border-ocean pb-1 cursor-pointer">{t('blog.read', lang)}</span>
+                <span className="text-ocean text-xs font-bold uppercase tracking-widest border-b border-ocean pb-1 cursor-pointer hover:text-gold hover:border-gold transition-colors">{t('blog.read', lang)}</span>
               </div>
             </div>
           ))}
@@ -231,34 +257,276 @@ export const BlogPage: React.FC<{ data: AppData; lang: string }> = ({ data, lang
 };
 
 export const ContactPage: React.FC<{ lang: string }> = ({ lang }) => {
+  // Initialize form data from localStorage if available
+  const [formData, setFormData] = useState(() => {
+    try {
+      const saved = localStorage.getItem('contact_form_draft');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Failed to load draft", e);
+    }
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      message: '',
+      termsAccepted: false,
+      captchaInput: ''
+    };
+  });
+
+  const [captcha, setCaptcha] = useState({ a: 0, b: 0 });
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+
+  // Save to localStorage whenever formData changes
+  useEffect(() => {
+    localStorage.setItem('contact_form_draft', JSON.stringify(formData));
+  }, [formData]);
+
+  useEffect(() => {
+    // Generate random simple numbers for captcha
+    setCaptcha({
+      a: Math.floor(Math.random() * 10) + 1,
+      b: Math.floor(Math.random() * 10) + 1
+    });
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Allow only digits, max 10
+    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setFormData(prev => ({ ...prev, phone: val }));
+  };
+
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+     setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus('submitting');
+
+    const { firstName, lastName, email, phone, message, termsAccepted, captchaInput } = formData;
+    const sum = parseInt(captchaInput);
+    
+    // Validation checks
+    if(!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !message.trim() || !termsAccepted) {
+      setFormStatus('error');
+      return;
+    }
+    
+    // Captcha Validation
+    if(isNaN(sum) || sum !== (captcha.a + captcha.b)) {
+      alert(lang === 'bg' ? 'Грешен отговор на задачата!' : 'Incorrect security answer!');
+      setFormStatus('idle');
+      return;
+    }
+
+    // Success Simulation
+    setTimeout(() => {
+       setFormStatus('success');
+       // Clear draft from storage on success
+       localStorage.removeItem('contact_form_draft');
+       setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '', termsAccepted: false, captchaInput: '' });
+       setCaptcha({ a: Math.floor(Math.random() * 10) + 1, b: Math.floor(Math.random() * 10) + 1 });
+    }, 1000);
+  };
+
   return (
-    <div className="py-20 bg-white">
-      <div className="container mx-auto px-6">
-        <h1 className="text-4xl font-serif text-ocean text-center mb-16">{t('contact.title', lang)}</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Form */}
-          <div className="bg-gray-50 p-10">
-            <h3 className="text-2xl font-serif text-ocean mb-6">{t('contact.plan', lang)}</h3>
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="text" placeholder={t('contact.name_f', lang)} className="w-full bg-white p-4 border border-gray-200 focus:border-gold outline-none" />
-                <input type="text" placeholder={t('contact.name_l', lang)} className="w-full bg-white p-4 border border-gray-200 focus:border-gold outline-none" />
-              </div>
-              <input type="email" placeholder={t('contact.email', lang)} className="w-full bg-white p-4 border border-gray-200 focus:border-gold outline-none" />
-              <textarea rows={5} placeholder={t('contact.message', lang)} className="w-full bg-white p-4 border border-gray-200 focus:border-gold outline-none"></textarea>
-              <button className="bg-ocean text-white px-8 py-3 uppercase text-sm font-bold tracking-widest hover:bg-gold transition-colors">
-                {t('contact.send', lang)}
-              </button>
-            </form>
+    <div className="bg-white pb-20">
+      <PageHeader 
+        title={t('contact.title', lang)} 
+        subtitle={t('contact.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1423666639041-f14012b736a5?q=80&w=2061&auto=format&fit=crop"
+      />
+
+      <div className="container mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 shadow-2xl rounded-xl overflow-hidden">
+          
+          {/* Beautiful Form Section */}
+          <div className="bg-white p-10 md:p-14">
+            <h3 className="text-3xl font-serif text-ocean mb-8 border-b-2 border-gold pb-4 inline-block">{t('contact.plan', lang)}</h3>
+            
+            {formStatus === 'success' ? (
+               <div className="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg text-center animate-fade-in">
+                 <i className="fa-solid fa-check-circle text-4xl mb-3"></i>
+                 <h4 className="font-bold text-xl">{t('contact.submit_success', lang)}</h4>
+               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="group">
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2 group-focus-within:text-gold transition-colors">
+                      {t('contact.name_f', lang)} <span className="text-red-500">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      name="firstName" 
+                      value={formData.firstName} 
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 text-gray-900 border border-gray-200 p-4 rounded-lg focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all" 
+                      required 
+                    />
+                  </div>
+                  <div className="group">
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2 group-focus-within:text-gold transition-colors">
+                      {t('contact.name_l', lang)} <span className="text-red-500">*</span>
+                    </label>
+                    <input 
+                      type="text" 
+                      name="lastName" 
+                      value={formData.lastName} 
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 text-gray-900 border border-gray-200 p-4 rounded-lg focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all" 
+                      required 
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="group">
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2 group-focus-within:text-gold transition-colors">
+                      {t('contact.email', lang)} <span className="text-red-500">*</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      name="email" 
+                      value={formData.email} 
+                      onChange={handleChange}
+                      className="w-full bg-gray-50 text-gray-900 border border-gray-200 p-4 rounded-lg focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all" 
+                      required 
+                    />
+                  </div>
+                  <div className="group">
+                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2 group-focus-within:text-gold transition-colors">
+                      {t('contact.phone', lang)} <span className="text-red-500">*</span> <span className="text-[10px] font-normal text-gray-400">(Max 10)</span>
+                    </label>
+                    <input 
+                      type="tel" 
+                      name="phone" 
+                      value={formData.phone} 
+                      onChange={handlePhoneChange}
+                      maxLength={10}
+                      className="w-full bg-gray-50 text-gray-900 border border-gray-200 p-4 rounded-lg focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all" 
+                      required 
+                    />
+                  </div>
+                </div>
+
+                <div className="group">
+                  <label className="block text-xs font-bold uppercase text-gray-500 mb-2 group-focus-within:text-gold transition-colors">
+                    {t('contact.message', lang)} <span className="text-red-500">*</span>
+                  </label>
+                  <textarea 
+                    name="message" 
+                    value={formData.message} 
+                    onChange={handleChange}
+                    rows={5} 
+                    className="w-full bg-gray-50 text-gray-900 border border-gray-200 p-4 rounded-lg focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all resize-none"
+                    required
+                  ></textarea>
+                </div>
+
+                {/* Captcha & Terms */}
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <div className="flex items-center gap-3 mb-4">
+                    <input 
+                      type="checkbox" 
+                      id="terms" 
+                      checked={formData.termsAccepted} 
+                      onChange={handleCheckbox}
+                      className="w-5 h-5 text-gold border-gray-300 rounded focus:ring-gold"
+                      required
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer select-none hover:text-ocean transition-colors">
+                      {t('contact.terms', lang)} <span className="text-red-500">*</span>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <label className="block text-xs font-bold uppercase text-gray-500 mb-1">
+                        {t('contact.captcha', lang)}:
+                      </label>
+                      <div className="text-sm font-bold text-ocean bg-white px-3 py-2 rounded border inline-block min-w-[100px] text-center">
+                        {t('contact.captcha_q', lang).replace('{a}', captcha.a.toString()).replace('{b}', captcha.b.toString())}
+                      </div>
+                    </div>
+                    <div className="w-24">
+                       <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Answer <span className="text-red-500">*</span></label>
+                       <input 
+                        type="number" 
+                        name="captchaInput" 
+                        value={formData.captchaInput} 
+                        onChange={handleChange}
+                        className="w-full bg-white text-gray-900 border border-gray-300 p-2 rounded focus:border-gold outline-none text-center font-bold"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {formStatus === 'error' && (
+                  <p className="text-red-500 text-sm font-bold animate-pulse">
+                    <i className="fa-solid fa-triangle-exclamation mr-2"></i>
+                    {t('contact.submit_error', lang)}
+                  </p>
+                )}
+
+                <button 
+                  type="submit"
+                  disabled={formStatus === 'submitting'} 
+                  className={`w-full bg-ocean text-white px-8 py-4 rounded-lg uppercase text-sm font-bold tracking-widest hover:bg-gold hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${formStatus === 'submitting' ? 'opacity-70 cursor-wait' : ''}`}
+                >
+                  {formStatus === 'submitting' ? (
+                    <span><i className="fa-solid fa-spinner fa-spin mr-2"></i> Sending...</span>
+                  ) : t('contact.send', lang)}
+                </button>
+              </form>
+            )}
           </div>
           
-          {/* Map Placeholder */}
-          <div className="h-full min-h-[400px] bg-gray-200 relative flex items-center justify-center">
-            <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-               <span className="text-gray-500 font-bold uppercase tracking-widest">
-                 <i className="fa-solid fa-map-location-dot mr-2"></i> Google Maps Embedded Here
-               </span>
-            </div>
+          {/* Map/Visual Section */}
+          <div className="hidden lg:block h-full min-h-[600px] bg-ocean relative flex items-center justify-center overflow-hidden group">
+             <div 
+              className="absolute inset-0 bg-cover bg-center grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
+              style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop")' }}
+             ></div>
+             <div className="absolute inset-0 bg-gradient-to-r from-ocean via-ocean/50 to-transparent"></div>
+             
+             <div className="relative z-10 p-12 text-white max-w-md">
+                <h4 className="font-serif text-4xl mb-6">Global Headquarters</h4>
+                <div className="space-y-6 text-lg font-light">
+                  <p className="flex items-start gap-4">
+                    <i className="fa-solid fa-location-dot mt-1 text-gold"></i>
+                    <span>123 Luxury Lane<br/>New York, NY 10001<br/>United States</span>
+                  </p>
+                  <p className="flex items-center gap-4">
+                    <i className="fa-solid fa-phone text-gold"></i>
+                    <span>+1 (555) 123-4567</span>
+                  </p>
+                  <p className="flex items-center gap-4">
+                    <i className="fa-solid fa-envelope text-gold"></i>
+                    <span>concierge@worldclass.com</span>
+                  </p>
+                </div>
+                
+                <div className="mt-12 pt-12 border-t border-white/20">
+                  <p className="text-sm text-gray-300 mb-4 uppercase tracking-widest">Follow our journey</p>
+                  <div className="flex gap-6 text-2xl">
+                    <i className="fa-brands fa-instagram hover:text-gold cursor-pointer transition-colors"></i>
+                    <i className="fa-brands fa-twitter hover:text-gold cursor-pointer transition-colors"></i>
+                    <i className="fa-brands fa-linkedin hover:text-gold cursor-pointer transition-colors"></i>
+                  </div>
+                </div>
+             </div>
           </div>
         </div>
       </div>

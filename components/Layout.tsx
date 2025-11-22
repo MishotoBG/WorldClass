@@ -31,7 +31,10 @@ export const Navbar: React.FC<{
     { labelKey: 'nav.contact', value: 'CONTACT' },
   ];
 
-  const currentLangObj = data.config.supportedLanguages.find(l => l.code === currentLang) || data.config.supportedLanguages[0];
+  // Robust fallback if language not found
+  const currentLangObj = data.config.supportedLanguages.find(l => l.code === currentLang) 
+    || data.config.supportedLanguages[0] 
+    || { code: 'en', label: 'English', flagCode: 'gb' };
 
   return (
     <nav className="bg-ocean text-white sticky top-0 z-50 shadow-lg">
@@ -159,6 +162,40 @@ export const Navbar: React.FC<{
         </div>
       )}
     </nav>
+  );
+};
+
+export const PageHeader: React.FC<{ 
+  title: string; 
+  subtitle?: string; 
+  backgroundImage: string; 
+}> = ({ title, subtitle, backgroundImage }) => {
+  return (
+    <div className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden bg-gray-900">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center transform transition-transform duration-[20s] hover:scale-110"
+        style={{ backgroundImage: `url("${backgroundImage}")` }}
+      ></div>
+      
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ocean/60 via-ocean/40 to-ocean/80 z-10"></div>
+
+      {/* Content */}
+      <div className="relative z-20 text-center px-6 max-w-4xl mx-auto">
+        <h1 className="text-5xl md:text-7xl font-serif text-white font-bold mb-6 drop-shadow-2xl tracking-wide animate-fade-in">
+          {title}
+        </h1>
+        {subtitle && (
+          <>
+            <div className="w-24 h-1 bg-gold mx-auto mb-8 rounded-full shadow-lg"></div>
+            <p className="text-xl md:text-2xl text-gray-100 font-light tracking-widest uppercase drop-shadow-md">
+              {subtitle}
+            </p>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

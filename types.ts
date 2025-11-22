@@ -11,8 +11,12 @@ export interface LocalizedContent {
   };
 }
 
+export type ContentStatus = 'published' | 'draft';
+
 export interface Destination {
   id: string;
+  slug: string; // For URL: 'santorini-greece'
+  status: ContentStatus;
   name: string; // Default (fallback)
   region: string;
   price: number;
@@ -24,6 +28,8 @@ export interface Destination {
 
 export interface BlogPost {
   id: string;
+  slug: string;
+  status: ContentStatus;
   title: string;
   excerpt: string;
   date: string;

@@ -1,8 +1,17 @@
+
 import { GoogleGenAI } from "@google/genai";
 
 export const generateDestinationDescription = async (locationName: string, langCode: string = 'en'): Promise<string> => {
   try {
-    const apiKey = process.env.API_KEY;
+    // Robust API Key retrieval
+    let apiKey = '';
+    try {
+      const env = typeof process !== 'undefined' ? process.env : {};
+      apiKey = env.API_KEY || '';
+    } catch (e) {
+      console.warn("Could not access process.env");
+    }
+    
     if (!apiKey) {
       console.warn("No API Key found for Gemini");
       return "Description generation unavailable (Missing API Key).";
@@ -15,7 +24,7 @@ export const generateDestinationDescription = async (locationName: string, langC
     // Using flash for speed on a simple text task
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Write a captivating, luxurious, 2-sentence travel description for ${locationName} in ${langName}. Focus on the atmosphere and unique experience.`,
+      contents: `Write a captivating, luxurious, 2-sentence travel description for ${locationName || 'this location'} in ${langName}. Focus on the atmosphere and unique experience.`,
     });
 
     return response.text || "Could not generate description.";
