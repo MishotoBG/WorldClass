@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AppData, Destination, BlogPost, SiteConfig, Language } from '../types';
 import { generateDestinationDescription } from '../services/geminiService';
@@ -290,8 +291,9 @@ const DestinationManager: React.FC<{
                 key={lang.code}
                 type="button"
                 onClick={() => setEditLang(lang.code)}
-                className={`px-3 py-1 text-xs font-bold rounded ${editLang === lang.code ? 'bg-ocean text-white' : 'text-gray-500'}`}
+                className={`px-3 py-1 text-xs font-bold rounded flex items-center gap-1 ${editLang === lang.code ? 'bg-ocean text-white' : 'text-gray-500'}`}
               >
+                <img src={`https://flagcdn.com/20x15/${lang.flagCode || lang.code}.png`} className="w-4 h-3 object-cover" alt="" />
                 {lang.code.toUpperCase()}
               </button>
             ))}
@@ -402,6 +404,7 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
   const [localConfig, setLocalConfig] = useState(config);
   const [newLangCode, setNewLangCode] = useState('');
   const [newLangLabel, setNewLangLabel] = useState('');
+  const [newFlagCode, setNewFlagCode] = useState('');
   const [activeLangTab, setActiveLangTab] = useState('en');
 
   const handleChange = (key: keyof SiteConfig, val: string) => {
@@ -436,10 +439,15 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
       if(!exists) {
         setLocalConfig(prev => ({
           ...prev,
-          supportedLanguages: [...prev.supportedLanguages, { code: newLangCode.toLowerCase(), label: newLangLabel }]
+          supportedLanguages: [...prev.supportedLanguages, { 
+            code: newLangCode.toLowerCase(), 
+            label: newLangLabel,
+            flagCode: newFlagCode.toLowerCase() || newLangCode.toLowerCase()
+          }]
         }));
         setNewLangCode('');
         setNewLangLabel('');
+        setNewFlagCode('');
       }
     }
   };
@@ -481,15 +489,19 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
           <div className="space-y-2">
             {localConfig.supportedLanguages.map(lang => (
               <div key={lang.code} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                <span>{lang.label} ({lang.code})</span>
+                <div className="flex items-center gap-2">
+                  <img src={`https://flagcdn.com/20x15/${lang.flagCode || lang.code}.png`} alt="" className="w-4 h-3 rounded-sm shadow-sm"/>
+                  <span>{lang.label} ({lang.code})</span>
+                </div>
                 {lang.code !== 'en' && <button onClick={() => removeLanguage(lang.code)} className="text-red-500 text-xs">Remove</button>}
               </div>
             ))}
           </div>
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-4 items-center">
             <input className="border p-2 text-sm w-16" placeholder="Code" value={newLangCode} onChange={e => setNewLangCode(e.target.value)} maxLength={2} />
             <input className="border p-2 text-sm flex-1" placeholder="Label (e.g. French)" value={newLangLabel} onChange={e => setNewLangLabel(e.target.value)} />
-            <button onClick={addLanguage} className="bg-gray-200 px-3 text-sm font-bold">+</button>
+            <input className="border p-2 text-sm w-20" placeholder="Flag (gb)" value={newFlagCode} onChange={e => setNewFlagCode(e.target.value)} maxLength={2} />
+            <button onClick={addLanguage} className="bg-gray-200 px-3 py-2 text-sm font-bold rounded hover:bg-gray-300">+</button>
           </div>
         </div>
 
@@ -503,8 +515,9 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
               <button
                 key={lang.code}
                 onClick={() => setActiveLangTab(lang.code)}
-                className={`px-3 py-2 text-sm font-bold ${activeLangTab === lang.code ? 'text-ocean border-b-2 border-ocean' : 'text-gray-400'}`}
+                className={`px-3 py-2 text-sm font-bold flex items-center gap-2 ${activeLangTab === lang.code ? 'text-ocean border-b-2 border-ocean' : 'text-gray-400'}`}
               >
+                <img src={`https://flagcdn.com/20x15/${lang.flagCode || lang.code}.png`} alt="" className="w-4 h-3 rounded-sm shadow-sm opacity-80"/>
                 {lang.code.toUpperCase()}
               </button>
             ))}

@@ -1,3 +1,4 @@
+
 import { AppData, Destination, BlogPost, SiteConfig, Stats } from './types';
 
 export const INITIAL_DESTINATIONS: Destination[] = [
@@ -117,8 +118,8 @@ export const INITIAL_CONFIG: SiteConfig = {
   aboutText: 'WorldClass was founded on the belief that travel is the only thing you buy that makes you richer. With over 20 years of experience, we curate bespoke journeys that blend luxury with authenticity.',
   missionText: 'Our mission is to connect people with the world\'s most extraordinary places while promoting sustainable and respectful tourism.',
   supportedLanguages: [
-    { code: 'en', label: 'English' },
-    { code: 'bg', label: 'Български' }
+    { code: 'en', label: 'English', flagCode: 'gb' },
+    { code: 'bg', label: 'Български', flagCode: 'bg' }
   ],
   defaultLanguage: 'en',
   translations: {

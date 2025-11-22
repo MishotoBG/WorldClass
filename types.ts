@@ -1,6 +1,8 @@
+
 export interface Language {
   code: string; // 'en', 'bg'
   label: string; // 'English', 'Български'
+  flagCode?: string; // 'gb', 'bg' - ISO country code for flagcdn
 }
 
 export interface LocalizedContent {

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PageView, AppData } from '../types';
 import { t } from '../utils/i18n';
@@ -19,6 +20,7 @@ export const Navbar: React.FC<{
   data: AppData;
 }> = ({ currentPage, setCurrentPage, currentLang, setLang, data }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
   const navLinks: { labelKey: string; value: PageView }[] = [
     { labelKey: 'nav.home', value: 'HOME' },
@@ -28,6 +30,8 @@ export const Navbar: React.FC<{
     { labelKey: 'nav.blog', value: 'BLOG' },
     { labelKey: 'nav.contact', value: 'CONTACT' },
   ];
+
+  const currentLangObj = data.config.supportedLanguages.find(l => l.code === currentLang) || data.config.supportedLanguages[0];
 
   return (
     <nav className="bg-ocean text-white sticky top-0 z-50 shadow-lg">
@@ -53,17 +57,44 @@ export const Navbar: React.FC<{
               </button>
             ))}
             
-            {/* Language Switcher */}
-            <div className="relative ml-4 border-l border-gray-700 pl-4 flex items-center gap-2">
-               {data.config.supportedLanguages.map(lang => (
-                 <button 
-                   key={lang.code}
-                   onClick={() => setLang(lang.code)}
-                   className={`text-xs font-bold uppercase px-2 py-1 rounded ${currentLang === lang.code ? 'bg-gold text-ocean' : 'text-gray-400 hover:text-white'}`}
-                 >
-                   {lang.code}
-                 </button>
-               ))}
+            {/* Language Switcher (Flag Dropdown) */}
+            <div className="relative ml-4 border-l border-gray-700 pl-4">
+              <button 
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+              >
+                <img 
+                  src={`https://flagcdn.com/24x18/${currentLangObj.flagCode || currentLangObj.code}.png`} 
+                  alt={currentLangObj.label}
+                  className="h-4 w-6 object-cover rounded-sm"
+                />
+                <i className={`fa-solid fa-chevron-down text-[10px] text-gray-500 transition-transform duration-200 ${langDropdownOpen ? 'rotate-180' : ''}`}></i>
+              </button>
+
+              {langDropdownOpen && (
+                <div className="absolute right-0 top-full mt-3 w-40 bg-white shadow-xl rounded-md overflow-hidden py-1 z-50 animate-fade-in-down border border-gray-100">
+                  <div className="text-xs font-bold text-gray-400 px-4 py-2 uppercase tracking-wider bg-gray-50 border-b border-gray-100">
+                    Select Language
+                  </div>
+                  {data.config.supportedLanguages.map(lang => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLang(lang.code);
+                        setLangDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-colors ${currentLang === lang.code ? 'bg-blue-50 text-ocean' : 'text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      <img 
+                        src={`https://flagcdn.com/24x18/${lang.flagCode || lang.code}.png`} 
+                        alt={lang.label}
+                        className="h-3 w-5 object-cover rounded-sm shadow-sm"
+                      />
+                      <span className="font-medium">{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <button
@@ -85,15 +116,20 @@ export const Navbar: React.FC<{
       {isOpen && (
         <div className="md:hidden bg-ocean border-t border-gray-800">
           <div className="flex flex-col p-4 space-y-4">
-             {/* Mobile Language Switcher */}
-             <div className="flex gap-4 mb-2 border-b border-gray-800 pb-2">
+             {/* Mobile Language List */}
+             <div className="flex flex-wrap gap-3 mb-2 border-b border-gray-800 pb-4">
                {data.config.supportedLanguages.map(lang => (
                  <button 
                    key={lang.code}
                    onClick={() => setLang(lang.code)}
-                   className={`text-xs font-bold uppercase ${currentLang === lang.code ? 'text-gold' : 'text-gray-400'}`}
+                   className={`flex items-center gap-2 px-3 py-2 rounded border ${currentLang === lang.code ? 'border-gold bg-gold/10 text-gold' : 'border-gray-700 text-gray-400'}`}
                  >
-                   {lang.label}
+                   <img 
+                      src={`https://flagcdn.com/24x18/${lang.flagCode || lang.code}.png`} 
+                      alt={lang.label}
+                      className="h-3 w-5 object-cover rounded-sm"
+                    />
+                   <span className="text-xs font-bold uppercase">{lang.code}</span>
                  </button>
                ))}
             </div>
