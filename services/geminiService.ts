@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 
-export const generateDestinationDescription = async (locationName: string): Promise<string> => {
+export const generateDestinationDescription = async (locationName: string, langCode: string = 'en'): Promise<string> => {
   try {
     const apiKey = process.env.API_KEY;
     if (!apiKey) {
@@ -10,10 +10,12 @@ export const generateDestinationDescription = async (locationName: string): Prom
 
     const ai = new GoogleGenAI({ apiKey });
     
+    const langName = langCode === 'bg' ? 'Bulgarian' : 'English';
+
     // Using flash for speed on a simple text task
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Write a captivating, luxurious, 2-sentence travel description for ${locationName}. Focus on the atmosphere and unique experience.`,
+      contents: `Write a captivating, luxurious, 2-sentence travel description for ${locationName} in ${langName}. Focus on the atmosphere and unique experience.`,
     });
 
     return response.text || "Could not generate description.";

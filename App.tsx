@@ -15,6 +15,7 @@ import { AdminDashboard } from './pages/Admin';
 const App: React.FC = () => {
   const [data, setData] = useState<AppData>(loadData());
   const [currentPage, setCurrentPage] = useState<PageView>('HOME');
+  const [currentLang, setCurrentLang] = useState(data.config.defaultLanguage || 'en');
 
   // Persist data whenever it changes
   useEffect(() => {
@@ -47,13 +48,13 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch(currentPage) {
-      case 'HOME': return <HomePage data={data} navigateTo={setCurrentPage} />;
-      case 'ABOUT': return <AboutPage data={data} navigateTo={setCurrentPage} />;
-      case 'DESTINATIONS': return <DestinationsPage data={data} navigateTo={setCurrentPage} />;
-      case 'SERVICES': return <ServicesPage />;
-      case 'BLOG': return <BlogPage data={data} />;
-      case 'CONTACT': return <ContactPage />;
-      default: return <HomePage data={data} navigateTo={setCurrentPage} />;
+      case 'HOME': return <HomePage data={data} navigateTo={setCurrentPage} lang={currentLang} />;
+      case 'ABOUT': return <AboutPage data={data} navigateTo={setCurrentPage} lang={currentLang} />;
+      case 'DESTINATIONS': return <DestinationsPage data={data} navigateTo={setCurrentPage} lang={currentLang} />;
+      case 'SERVICES': return <ServicesPage lang={currentLang} />;
+      case 'BLOG': return <BlogPage data={data} lang={currentLang} />;
+      case 'CONTACT': return <ContactPage lang={currentLang} />;
+      default: return <HomePage data={data} navigateTo={setCurrentPage} lang={currentLang} />;
     }
   };
 
@@ -68,7 +69,13 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout currentPage={currentPage} setCurrentPage={setCurrentPage}>
+    <Layout 
+      currentPage={currentPage} 
+      setCurrentPage={setCurrentPage} 
+      currentLang={currentLang}
+      setLang={setCurrentLang}
+      data={data}
+    >
       {renderPage()}
     </Layout>
   );

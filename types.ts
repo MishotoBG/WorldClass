@@ -1,11 +1,23 @@
+export interface Language {
+  code: string; // 'en', 'bg'
+  label: string; // 'English', 'Български'
+}
+
+export interface LocalizedContent {
+  [langCode: string]: {
+    [key: string]: string;
+  };
+}
+
 export interface Destination {
   id: string;
-  name: string;
+  name: string; // Default (fallback)
   region: string;
   price: number;
   image: string;
-  description: string;
+  description: string; // Default (fallback)
   type: 'Luxury' | 'Adventure' | 'Relaxation' | 'Cultural';
+  translations?: LocalizedContent; // Stores fields like { bg: { name: '...', description: '...' } }
 }
 
 export interface BlogPost {
@@ -14,15 +26,19 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   image: string;
+  translations?: LocalizedContent;
 }
 
 export interface SiteConfig {
-  primaryColor: string; // Hex code for Ocean
-  secondaryColor: string; // Hex code for Gold
+  primaryColor: string; 
+  secondaryColor: string; 
   heroTitle: string;
   heroSubtitle: string;
   aboutText: string;
   missionText: string;
+  supportedLanguages: Language[];
+  defaultLanguage: string;
+  translations?: LocalizedContent; // Overrides for UI strings
 }
 
 export interface Stats {
