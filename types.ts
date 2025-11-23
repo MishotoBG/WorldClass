@@ -44,6 +44,10 @@ export interface SiteConfig {
   heroSubtitle: string;
   aboutText: string;
   missionText: string;
+  logoUrl?: string;     // New
+  faviconUrl?: string;  // New
+  seoTitle?: string;    // New
+  seoDescription?: string; // New
   supportedLanguages: Language[];
   defaultLanguage: string;
   translations?: LocalizedContent; // Overrides for UI strings
@@ -54,7 +58,7 @@ export interface Stats {
   bookings: number;
 }
 
-export type PageView = 'HOME' | 'ABOUT' | 'DESTINATIONS' | 'SERVICES' | 'BLOG' | 'CONTACT' | 'ADMIN';
+export type PageView = 'HOME' | 'ABOUT' | 'DESTINATIONS' | 'SERVICES' | 'BLOG' | 'CONTACT' | 'ADMIN' | 'TERMS';
 
 export interface AppData {
   destinations: Destination[];

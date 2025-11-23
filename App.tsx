@@ -3,13 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { loadData, saveData } from './utils/storage';
 import { AppData, PageView } from './types';
 import { Layout } from './components/Layout';
+import { c } from './utils/i18n';
 import { 
   HomePage, 
   AboutPage, 
   DestinationsPage, 
   ServicesPage, 
   BlogPage, 
-  ContactPage 
+  ContactPage,
+  TermsPage
 } from './pages/PublicPages';
 import { AdminDashboard } from './pages/Admin';
 
@@ -48,19 +50,49 @@ const App: React.FC = () => {
     }
   }, [data]);
 
-  // SEO: Update Title (Safe in most environments)
+  // Handle Favicon Update
   useEffect(() => {
+    if (data?.config?.faviconUrl) {
+      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.href = data.config.faviconUrl;
+    }
+  }, [data?.config?.faviconUrl]);
+
+  // SEO: Update Title and Description
+  useEffect(() => {
+    const baseTitle = c(data, 'seoTitle', currentLang) || 'WorldClass Travel';
+    
     const titles: Record<PageView, string> = {
-      HOME: 'Home | WorldClass Travel',
-      ABOUT: 'About Us | WorldClass Travel',
-      DESTINATIONS: 'Luxury Destinations | WorldClass Travel',
-      SERVICES: 'Our Services | WorldClass Travel',
-      BLOG: 'Travel Journal | WorldClass Travel',
-      CONTACT: 'Contact Us | WorldClass Travel',
-      ADMIN: 'Admin Dashboard | WorldClass Travel',
+      HOME: baseTitle,
+      ABOUT: `About Us | ${baseTitle}`,
+      DESTINATIONS: `Destinations | ${baseTitle}`,
+      SERVICES: `Services | ${baseTitle}`,
+      BLOG: `Blog | ${baseTitle}`,
+      CONTACT: `Contact | ${baseTitle}`,
+      ADMIN: `Admin | ${baseTitle}`,
+      TERMS: `Terms | ${baseTitle}`,
     };
-    document.title = titles[currentPage] || 'WorldClass Travel';
-  }, [currentPage]);
+    
+    document.title = titles[currentPage] || baseTitle;
+
+    // Meta Description
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const descContent = c(data, 'seoDescription', currentLang) || 'Luxury travel experiences.';
+    
+    if (metaDesc) {
+      metaDesc.setAttribute('content', descContent);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = descContent;
+      document.head.appendChild(meta);
+    }
+  }, [currentPage, currentLang, data]);
 
   const updateData = (newData: Partial<AppData>) => {
     setData(prev => {
@@ -82,6 +114,7 @@ const App: React.FC = () => {
       case 'SERVICES': return <ServicesPage lang={currentLang} />;
       case 'BLOG': return <BlogPage data={data} lang={currentLang} />;
       case 'CONTACT': return <ContactPage lang={currentLang} />;
+      case 'TERMS': return <TermsPage lang={currentLang} />;
       default: return <HomePage data={data} navigateTo={(p) => navigateTo(p)} lang={currentLang} />;
     }
   };

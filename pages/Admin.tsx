@@ -567,6 +567,17 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
              </div>
           </div>
 
+          <div>
+             <label className="block text-sm font-bold text-gray-700 mb-2">Logo URL</label>
+             <input className="w-full border p-2 rounded text-sm" placeholder="https://..." value={localConfig.logoUrl || ''} onChange={(e) => handleChange('logoUrl', e.target.value)} />
+             {localConfig.logoUrl && <img src={localConfig.logoUrl} alt="Preview" className="h-10 mt-2 object-contain" />}
+          </div>
+
+          <div>
+             <label className="block text-sm font-bold text-gray-700 mb-2">Favicon URL</label>
+             <input className="w-full border p-2 rounded text-sm" placeholder="https://.../icon.png" value={localConfig.faviconUrl || ''} onChange={(e) => handleChange('faviconUrl', e.target.value)} />
+          </div>
+
           <hr className="my-6" />
           
           <h4 className="font-bold text-gray-500 text-sm uppercase">Languages</h4>
@@ -600,7 +611,7 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
 
         {/* Content Editing */}
         <div className="space-y-6">
-          <h4 className="font-bold text-gray-500 text-sm uppercase">Site Content</h4>
+          <h4 className="font-bold text-gray-500 text-sm uppercase">Site Content & SEO</h4>
           
           {/* Language Tabs for Content */}
           <div className="flex gap-2 border-b border-gray-200 mb-4">
@@ -624,6 +635,16 @@ const SettingsManager: React.FC<{ config: SiteConfig; onSave: (c: SiteConfig) =>
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">About Text</label>
             <textarea className="w-full border p-2 rounded h-32" value={getContentValue('aboutText')} onChange={(e) => handleContentChange('aboutText', e.target.value)} />
+          </div>
+
+           <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">SEO Meta Title (Home)</label>
+            <input className="w-full border p-2 rounded" value={getContentValue('seoTitle')} onChange={(e) => handleContentChange('seoTitle', e.target.value)} />
+          </div>
+
+           <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">SEO Meta Description</label>
+            <textarea className="w-full border p-2 rounded h-20" value={getContentValue('seoDescription')} onChange={(e) => handleContentChange('seoDescription', e.target.value)} />
           </div>
         </div>
       </div>

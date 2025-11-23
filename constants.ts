@@ -59,7 +59,7 @@ export const INITIAL_DESTINATIONS: Destination[] = [
   {
     id: '4',
     slug: 'maldives',
-    status: 'draft',
+    status: 'published',
     name: 'Maldives',
     region: 'Asia',
     price: 5500,
@@ -71,6 +71,78 @@ export const INITIAL_DESTINATIONS: Destination[] = [
         name: 'Малдиви',
         region: 'Азия',
         description: 'Крайната дестинация за релакс с частни бунгала над водата и кристално чисти води.'
+      }
+    }
+  },
+  {
+    id: '5',
+    slug: 'iceland-aurora',
+    status: 'published',
+    name: 'Reykjavik, Iceland',
+    region: 'Europe',
+    price: 2800,
+    image: 'https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=2959&auto=format&fit=crop',
+    description: 'Hunt for the Northern Lights and relax in geothermal lagoons.',
+    type: 'Adventure',
+    translations: {
+      bg: {
+        name: 'Рейкявик, Исландия',
+        region: 'Европа',
+        description: 'Лов на Северното сияние и релакс в геотермални лагуни.'
+      }
+    }
+  },
+  {
+    id: '6',
+    slug: 'tuscany-italy',
+    status: 'published',
+    name: 'Tuscany, Italy',
+    region: 'Europe',
+    price: 3100,
+    image: 'https://images.unsplash.com/photo-1528114039593-43664da1e707?q=80&w=2944&auto=format&fit=crop',
+    description: 'Rolling hills, vineyards, and renaissance art in the heart of Italy.',
+    type: 'Cultural',
+    translations: {
+      bg: {
+        name: 'Тоскана, Италия',
+        region: 'Европа',
+        description: 'Хълмове, лозя и ренесансово изкуство в сърцето на Италия.'
+      }
+    }
+  },
+  {
+    id: '7',
+    slug: 'dubai-uae',
+    status: 'published',
+    name: 'Dubai, UAE',
+    region: 'Middle East',
+    price: 4500,
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea904acfb5a?q=80&w=2800&auto=format&fit=crop',
+    description: 'Futuristic architecture, luxury shopping, and desert safaris.',
+    type: 'Luxury',
+    translations: {
+      bg: {
+        name: 'Дубай, ОАЕ',
+        region: 'Близкия Изток',
+        description: 'Футуристична архитектура, луксозно пазаруване и пустинни сафарита.'
+      }
+    }
+  },
+  {
+    id: '8',
+    slug: 'bali-indonesia',
+    status: 'published',
+    name: 'Bali, Indonesia',
+    region: 'Asia',
+    price: 2200,
+    image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=2838&auto=format&fit=crop',
+    description: 'Spiritual retreats, lush jungles, and pristine beaches.',
+    type: 'Relaxation',
+    translations: {
+      bg: {
+        name: 'Бали, Индонезия',
+        region: 'Азия',
+        description: 'Духовни уединения, буйни джунгли и девствени плажове.'
       }
     }
   }
@@ -121,6 +193,36 @@ export const INITIAL_POSTS: BlogPost[] = [
         excerpt: 'Защо устойчивото пътуване се превръща в новия стандарт за луксозните изследователи.'
       }
     }
+  },
+  {
+    id: '4',
+    slug: 'culinary-journey-italy',
+    status: 'published',
+    title: 'A Culinary Journey Through Italy',
+    excerpt: 'From Pasta to Gelato: Eating your way through the most delicious country on earth.',
+    date: 'Dec 10, 2023',
+    image: 'https://images.unsplash.com/photo-1498579150354-977475b7ea0b?q=80&w=2940&auto=format&fit=crop',
+    translations: {
+      bg: {
+        title: 'Кулинарно пътешествие из Италия',
+        excerpt: 'От паста до джелато: Да хапнеш пътя си през най-вкусната страна на земята.'
+      }
+    }
+  },
+  {
+    id: '5',
+    slug: 'solo-travel-guide',
+    status: 'published',
+    title: 'The Ultimate Solo Travel Guide',
+    excerpt: 'Tips, safety advice, and the best destinations for traveling alone.',
+    date: 'Jan 15, 2024',
+    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=2874&auto=format&fit=crop',
+    translations: {
+      bg: {
+        title: 'Върховният наръчник за соло пътуване',
+        excerpt: 'Съвети, безопасност и най-добрите дестинации за пътуване сам.'
+      }
+    }
   }
 ];
 
@@ -131,6 +233,10 @@ export const INITIAL_CONFIG: SiteConfig = {
   heroSubtitle: 'Curated experiences for the modern explorer.',
   aboutText: 'WorldClass was founded on the belief that travel is the only thing you buy that makes you richer. With over 20 years of experience, we curate bespoke journeys that blend luxury with authenticity.',
   missionText: 'Our mission is to connect people with the world\'s most extraordinary places while promoting sustainable and respectful tourism.',
+  logoUrl: '',
+  faviconUrl: '',
+  seoTitle: 'WorldClass Travel - Luxury Experiences',
+  seoDescription: 'Discover the world\'s most exclusive destinations with WorldClass Travel.',
   supportedLanguages: [
     { code: 'en', label: 'English', flagCode: 'gb' },
     { code: 'bg', label: 'Български', flagCode: 'bg' }
@@ -141,7 +247,9 @@ export const INITIAL_CONFIG: SiteConfig = {
       heroTitle: 'Пътуване отвъд обикновеното',
       heroSubtitle: 'Подбрани преживявания за съвременния изследовател.',
       aboutText: 'WorldClass е основана с вярата, че пътуването е единственото нещо, което купувате и ви прави по-богати. С над 20 години опит, ние създаваме персонализирани пътешествия, които съчетават лукс с автентичност.',
-      missionText: 'Нашата мисия е да свързваме хората с най-необикновените места в света, като същевременно насърчаваме устойчив и уважителен туризъм.'
+      missionText: 'Нашата мисия е да свързваме хората с най-необикновените места в света, като същевременно насърчаваме устойчив и уважителен туризъм.',
+      seoTitle: 'WorldClass Travel - Луксозни Пътешествия',
+      seoDescription: 'Открийте най-ексклузивните дестинации в света с WorldClass Travel.'
     }
   }
 };
@@ -168,6 +276,8 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'services.sub': 'Exceptional care for your journey.',
     'blog.sub': 'Inspiring stories from around the globe.',
     'contact.sub': 'Let us craft your perfect itinerary.',
+    'terms.title': 'Terms & Conditions',
+    'terms.sub': 'Please read our policies carefully.',
 
     'footer.about': 'Curating unforgettable journeys for the discerning traveler. Explore the world with elegance and ease.',
     'footer.quickLinks': 'Quick Links',
@@ -176,15 +286,27 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'footer.subscribeText': 'Subscribe for exclusive offers and travel inspiration.',
     'footer.subscribeBtn': 'Subscribe',
     'footer.rights': 'All rights reserved.',
+    'footer.terms': 'Terms & Conditions',
 
     'home.featured': 'Featured Destinations',
     'home.book': 'Book Your Journey',
     'home.testimonial': '"WorldClass didn\'t just book a trip; they curated a life experience. From the private guides to the hidden culinary gems, every detail was perfection."',
+    'home.why_us': 'Why Choose WorldClass?',
+    'home.why_1_t': 'Expert Curation',
+    'home.why_1_d': 'Our specialists have personally vetted every hotel, guide, and experience.',
+    'home.why_2_t': '24/7 Concierge',
+    'home.why_2_d': 'Peace of mind knowing support is just a call away, anywhere in the world.',
+    'home.why_3_t': 'Exclusive Access',
+    'home.why_3_d': 'Skip the lines and enter private estates closed to the general public.',
 
     'dest.filters.all': 'All',
     'dest.details': 'View Details',
     'dest.curated': 'Curated Destinations',
     'dest.sub': 'Discover your next escape.',
+    'pagination.prev': 'Previous',
+    'pagination.next': 'Next',
+    'pagination.page': 'Page',
+    'pagination.of': 'of',
 
     'services.title': 'Our Services',
     'services.flight': 'Flight Booking',
@@ -212,6 +334,10 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'contact.send': 'Send Message',
     'contact.submit_success': 'Message Sent Successfully',
     'contact.submit_error': 'Please fill all required fields marked with *',
+
+    'cookie.text': 'We use cookies to enhance your experience and analyze our traffic.',
+    'cookie.accept': 'Accept All',
+    'cookie.policy': 'Privacy Policy',
   },
   bg: {
     'nav.home': 'Начало',
@@ -227,6 +353,8 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'services.sub': 'Изключителна грижа за вашето пътуване.',
     'blog.sub': 'Вдъхновяващи истории от целия свят.',
     'contact.sub': 'Нека създадем вашия перфектен маршрут.',
+    'terms.title': 'Общи Условия',
+    'terms.sub': 'Моля, прочетете внимателно нашите политики.',
 
     'footer.about': 'Създаваме незабравими пътешествия за взискателния пътешественик. Изследвайте света с елегантност и лекота.',
     'footer.quickLinks': 'Бързи връзки',
@@ -235,15 +363,27 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'footer.subscribeText': 'Абонирайте се за ексклузивни оферти и вдъхновение за пътуване.',
     'footer.subscribeBtn': 'Абонирай се',
     'footer.rights': 'Всички права запазени.',
+    'footer.terms': 'Общи условия',
 
     'home.featured': 'Препоръчани Дестинации',
     'home.book': 'Резервирайте пътуване',
     'home.testimonial': '"WorldClass не просто резервираха пътуване; те създадоха житейски опит. От частните гидове до скритите кулинарни съкровища, всеки детайл беше съвършенство."',
+    'home.why_us': 'Защо да изберете WorldClass?',
+    'home.why_1_t': 'Експертна селекция',
+    'home.why_1_d': 'Нашите специалисти са проверили лично всеки хотел, гид и преживяване.',
+    'home.why_2_t': '24/7 Консиерж',
+    'home.why_2_d': 'Спокойствие, знаейки, че подкрепата е само на едно обаждане разстояние.',
+    'home.why_3_t': 'Ексклузивен достъп',
+    'home.why_3_d': 'Пропуснете опашките и влезте в частни имения, затворени за широката публика.',
 
     'dest.filters.all': 'Всички',
     'dest.details': 'Виж Детайли',
     'dest.curated': 'Специални Дестинации',
     'dest.sub': 'Открийте следващото си бягство.',
+    'pagination.prev': 'Предишна',
+    'pagination.next': 'Следваща',
+    'pagination.page': 'Страница',
+    'pagination.of': 'от',
 
     'services.title': 'Нашите Услуги',
     'services.flight': 'Самолетни Билети',
@@ -271,5 +411,9 @@ export const UI_DICTIONARY: Record<string, Record<string, string>> = {
     'contact.send': 'Изпрати Съобщение',
     'contact.submit_success': 'Съобщението е изпратено успешно',
     'contact.submit_error': 'Моля попълнете всички полета маркирани със *',
+
+    'cookie.text': 'Ние използваме бисквитки, за да подобрим вашето изживяване и да анализираме трафика си.',
+    'cookie.accept': 'Приемам всички',
+    'cookie.policy': 'Политика за поверителност',
   }
 };

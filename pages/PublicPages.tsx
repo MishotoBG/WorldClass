@@ -39,8 +39,35 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
         </div>
       </section>
 
+      {/* Features / Stats Section (Why Us) */}
+      <section className="py-20 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-6">
+           <div className="text-center mb-16">
+             <h2 className="text-3xl font-serif text-ocean mb-4">{t('home.why_us', lang)}</h2>
+             <div className="w-16 h-1 bg-gold mx-auto"></div>
+           </div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div className="text-center p-6">
+                <i className="fa-solid fa-crown text-5xl text-gold mb-6"></i>
+                <h3 className="text-xl font-bold text-ocean mb-3">{t('home.why_1_t', lang)}</h3>
+                <p className="text-gray-500 leading-relaxed">{t('home.why_1_d', lang)}</p>
+              </div>
+              <div className="text-center p-6">
+                <i className="fa-solid fa-headset text-5xl text-gold mb-6"></i>
+                <h3 className="text-xl font-bold text-ocean mb-3">{t('home.why_2_t', lang)}</h3>
+                <p className="text-gray-500 leading-relaxed">{t('home.why_2_d', lang)}</p>
+              </div>
+              <div className="text-center p-6">
+                <i className="fa-solid fa-key text-5xl text-gold mb-6"></i>
+                <h3 className="text-xl font-bold text-ocean mb-3">{t('home.why_3_t', lang)}</h3>
+                <p className="text-gray-500 leading-relaxed">{t('home.why_3_d', lang)}</p>
+              </div>
+           </div>
+        </div>
+      </section>
+
       {/* Featured Destinations */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-serif text-ocean mb-4">{t('home.featured', lang)}</h2>
@@ -49,7 +76,7 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {publishedDestinations.slice(0, 3).map((dest) => (
               <div key={dest.id} className="group cursor-pointer" onClick={() => navigateTo('DESTINATIONS')}>
-                <div className="relative overflow-hidden h-80 mb-4">
+                <div className="relative overflow-hidden h-80 mb-4 shadow-lg rounded-sm">
                   <img 
                     src={dest.image} 
                     alt={l(dest, 'name', lang)} 
@@ -64,6 +91,11 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
                 <p className="text-gray-600 line-clamp-2">{l(dest, 'description', lang)}</p>
               </div>
             ))}
+          </div>
+          <div className="text-center mt-12">
+             <button onClick={() => navigateTo('DESTINATIONS')} className="border border-ocean text-ocean px-8 py-3 uppercase font-bold text-sm tracking-widest hover:bg-ocean hover:text-white transition-colors">
+               {t('dest.filters.all', lang)}
+             </button>
           </div>
         </div>
       </section>
@@ -131,15 +163,60 @@ export const AboutPage: React.FC<PageProps> = ({ data, lang }) => {
   );
 };
 
+// Pagination Component
+const Pagination: React.FC<{ 
+  totalItems: number; 
+  itemsPerPage: number; 
+  currentPage: number; 
+  onPageChange: (p: number) => void; 
+  lang: string; 
+}> = ({ totalItems, itemsPerPage, currentPage, onPageChange, lang }) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex justify-center gap-2 mt-12">
+      <button 
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="px-4 py-2 border border-gray-200 text-ocean hover:bg-ocean hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm uppercase font-bold"
+      >
+        {t('pagination.prev', lang)}
+      </button>
+      <span className="px-4 py-2 text-gray-500 text-sm flex items-center">
+        {t('pagination.page', lang)} {currentPage} {t('pagination.of', lang)} {totalPages}
+      </span>
+      <button 
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 border border-gray-200 text-ocean hover:bg-ocean hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm uppercase font-bold"
+      >
+        {t('pagination.next', lang)}
+      </button>
+    </div>
+  );
+};
+
 export const DestinationsPage: React.FC<PageProps> = ({ data, lang }) => {
   const [filter, setFilter] = useState('All');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
   
   const publishedDestinations = data.destinations.filter(d => d.status === 'published');
-
   const filters = ['All', 'Luxury', 'Adventure', 'Cultural', 'Relaxation'];
+  
+  // Reset page when filter changes
+  useEffect(() => setCurrentPage(1), [filter]);
+
   const filteredDestinations = filter === 'All' 
     ? publishedDestinations 
     : publishedDestinations.filter(d => d.type === filter);
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredDestinations.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="bg-white min-h-screen pb-20">
@@ -164,8 +241,8 @@ export const DestinationsPage: React.FC<PageProps> = ({ data, lang }) => {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {filteredDestinations.map(dest => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 animate-fade-in">
+          {currentItems.map(dest => (
             <div key={dest.id} className="bg-white shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="relative h-64 overflow-hidden">
                 <img src={dest.image} alt={l(dest, 'name', lang)} className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" />
@@ -187,6 +264,15 @@ export const DestinationsPage: React.FC<PageProps> = ({ data, lang }) => {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination 
+          totalItems={filteredDestinations.length} 
+          itemsPerPage={itemsPerPage} 
+          currentPage={currentPage} 
+          onPageChange={setCurrentPage}
+          lang={lang}
+        />
       </div>
     </div>
   );
@@ -219,13 +305,43 @@ export const ServicesPage: React.FC<{lang: string}> = ({ lang }) => {
             </div>
           ))}
         </div>
+        
+        {/* Process / Content Filler */}
+        <div className="mt-24 max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-serif text-ocean mb-12">How We Work</h2>
+          <div className="flex flex-col md:flex-row gap-8 justify-center relative">
+             {/* Connector Line (Desktop) */}
+             <div className="hidden md:block absolute top-8 left-10 right-10 h-0.5 bg-gray-200 z-0"></div>
+
+             {[1, 2, 3].map((step) => (
+               <div key={step} className="relative z-10 flex-1 bg-white md:bg-transparent">
+                 <div className="w-16 h-16 bg-ocean text-white rounded-full flex items-center justify-center text-2xl font-serif font-bold mx-auto mb-6 border-4 border-white shadow-lg">
+                   {step}
+                 </div>
+                 <h4 className="font-bold text-lg mb-2">
+                   {step === 1 ? 'Consultation' : step === 2 ? 'Curation' : 'Experience'}
+                 </h4>
+                 <p className="text-sm text-gray-500 px-4">
+                   {step === 1 ? 'We discuss your desires and requirements.' : step === 2 ? 'We design a bespoke itinerary.' : 'You enjoy a seamless journey.'}
+                 </p>
+               </div>
+             ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export const BlogPage: React.FC<{ data: AppData; lang: string }> = ({ data, lang }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
   const publishedPosts = data.posts.filter(p => p.status === 'published');
+  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = publishedPosts.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="bg-sand min-h-screen pb-20">
@@ -237,7 +353,7 @@ export const BlogPage: React.FC<{ data: AppData; lang: string }> = ({ data, lang
       
       <div className="container mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {publishedPosts.map(post => (
+          {currentItems.map(post => (
             <div key={post.id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
               <div className="h-56 overflow-hidden">
                 <img src={post.image} alt={l(post, 'title', lang)} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
@@ -250,6 +366,41 @@ export const BlogPage: React.FC<{ data: AppData; lang: string }> = ({ data, lang
               </div>
             </div>
           ))}
+        </div>
+        
+        <Pagination 
+          totalItems={publishedPosts.length} 
+          itemsPerPage={itemsPerPage} 
+          currentPage={currentPage} 
+          onPageChange={setCurrentPage}
+          lang={lang}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const TermsPage: React.FC<{ lang: string }> = ({ lang }) => {
+  return (
+    <div className="bg-white pb-20">
+      <PageHeader 
+        title={t('terms.title', lang)} 
+        subtitle={t('terms.sub', lang)}
+        backgroundImage="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2070&auto=format&fit=crop"
+      />
+      <div className="container mx-auto px-6 py-16 max-w-4xl">
+        <div className="prose max-w-none text-gray-600">
+          <h3 className="text-2xl font-serif text-ocean mb-4">1. Introduction</h3>
+          <p className="mb-6">Welcome to WorldClass Travel. By accessing our website and using our services, you agree to be bound by the following terms and conditions.</p>
+          
+          <h3 className="text-2xl font-serif text-ocean mb-4">2. Bookings & Payments</h3>
+          <p className="mb-6">All bookings are subject to availability. A deposit is required to secure your reservation. Full payment must be made 30 days prior to departure.</p>
+          
+          <h3 className="text-2xl font-serif text-ocean mb-4">3. Cancellations</h3>
+          <p className="mb-6">Cancellations made more than 30 days before departure will receive a 50% refund of the deposit. Cancellations made within 30 days are non-refundable.</p>
+          
+          <h3 className="text-2xl font-serif text-ocean mb-4">4. Privacy & Data Protection (GDPR)</h3>
+          <p className="mb-6">We value your privacy. We collect only necessary data to process your bookings and improve your experience. We do not sell your data to third parties.</p>
         </div>
       </div>
     </div>

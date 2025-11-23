@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PageView, AppData } from '../types';
 import { t } from '../utils/i18n';
 
@@ -11,6 +11,38 @@ interface LayoutProps {
   setLang: (lang: string) => void;
   data: AppData;
 }
+
+export const CookieBanner: React.FC<{ lang: string }> = ({ lang }) => {
+  const [accepted, setAccepted] = useState(true);
+
+  useEffect(() => {
+    const consent = localStorage.getItem('cookie_consent');
+    if (!consent) setAccepted(false);
+  }, []);
+
+  const accept = () => {
+    localStorage.setItem('cookie_consent', 'true');
+    setAccepted(true);
+  };
+
+  if (accepted) return null;
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-ocean/95 text-white p-4 z-[100] shadow-inner backdrop-blur-sm">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="text-sm md:text-base text-center md:text-left">
+          <i className="fa-solid fa-cookie-bite text-gold mr-2"></i>
+          {t('cookie.text', lang)}
+        </p>
+        <div className="flex gap-4">
+          <button onClick={accept} className="bg-gold text-ocean px-6 py-2 text-xs md:text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors">
+            {t('cookie.accept', lang)}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const Navbar: React.FC<{ 
   currentPage: PageView; 
@@ -41,11 +73,15 @@ export const Navbar: React.FC<{
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <div 
-            className="text-2xl font-serif font-bold tracking-wider cursor-pointer flex items-center gap-2"
+            className="text-2xl font-serif font-bold tracking-wider cursor-pointer flex items-center gap-3"
             onClick={() => setCurrentPage('HOME')}
           >
-            <i className="fa-solid fa-globe text-gold"></i>
-            WorldClass
+            {data.config.logoUrl ? (
+              <img src={data.config.logoUrl} alt="Logo" className="h-10 w-auto object-contain" />
+            ) : (
+              <i className="fa-solid fa-globe text-gold"></i>
+            )}
+            {!data.config.logoUrl && <span>WorldClass</span>}
           </div>
 
           {/* Desktop Menu */}
@@ -199,7 +235,7 @@ export const PageHeader: React.FC<{
   );
 };
 
-export const Footer: React.FC<{ currentLang: string }> = ({ currentLang }) => {
+export const Footer: React.FC<{ currentLang: string; navigateTo: (p: PageView) => void }> = ({ currentLang, navigateTo }) => {
   return (
     <footer className="bg-charcoal text-white pt-16 pb-8">
       <div className="container mx-auto px-6">
@@ -219,10 +255,10 @@ export const Footer: React.FC<{ currentLang: string }> = ({ currentLang }) => {
           <div>
             <h4 className="text-gold font-bold uppercase tracking-widest text-sm mb-6">{t('footer.quickLinks', currentLang)}</h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li className="hover:text-gold cursor-pointer">{t('nav.about', currentLang)}</li>
-              <li className="hover:text-gold cursor-pointer">{t('nav.destinations', currentLang)}</li>
-              <li className="hover:text-gold cursor-pointer">{t('nav.services', currentLang)}</li>
-              <li className="hover:text-gold cursor-pointer">Privacy Policy</li>
+              <li onClick={() => navigateTo('ABOUT')} className="hover:text-gold cursor-pointer">{t('nav.about', currentLang)}</li>
+              <li onClick={() => navigateTo('DESTINATIONS')} className="hover:text-gold cursor-pointer">{t('nav.destinations', currentLang)}</li>
+              <li onClick={() => navigateTo('SERVICES')} className="hover:text-gold cursor-pointer">{t('nav.services', currentLang)}</li>
+              <li onClick={() => navigateTo('TERMS')} className="hover:text-gold cursor-pointer">{t('footer.terms', currentLang)}</li>
             </ul>
           </div>
 
@@ -265,7 +301,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurren
       <main className="flex-grow">
         {children}
       </main>
-      <Footer currentLang={currentLang} />
+      <Footer currentLang={currentLang} navigateTo={setCurrentPage} />
+      <CookieBanner lang={currentLang} />
     </div>
   );
 };
