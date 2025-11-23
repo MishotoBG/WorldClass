@@ -12,32 +12,66 @@ interface LayoutProps {
   data: AppData;
 }
 
-export const CookieBanner: React.FC<{ lang: string }> = ({ lang }) => {
-  const [accepted, setAccepted] = useState(true);
+export const CookieBanner: React.FC<{ lang: string; navigateTo: (p: PageView) => void }> = ({ lang, navigateTo }) => {
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Check if user has made a choice yet
     const consent = localStorage.getItem('cookie_consent');
-    if (!consent) setAccepted(false);
+    if (consent === null) {
+      // Add a small delay for animation effect
+      const timer = setTimeout(() => setIsVisible(true), 1000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
-  const accept = () => {
-    localStorage.setItem('cookie_consent', 'true');
-    setAccepted(true);
+  const handleConsent = (choice: 'true' | 'false') => {
+    localStorage.setItem('cookie_consent', choice);
+    setIsVisible(false);
   };
 
-  if (accepted) return null;
+  if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-ocean/95 text-white p-4 z-[100] shadow-inner backdrop-blur-sm">
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-sm md:text-base text-center md:text-left">
-          <i className="fa-solid fa-cookie-bite text-gold mr-2"></i>
-          {t('cookie.text', lang)}
-        </p>
-        <div className="flex gap-4">
-          <button onClick={accept} className="bg-gold text-ocean px-6 py-2 text-xs md:text-sm font-bold uppercase tracking-widest rounded hover:bg-white transition-colors">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ocean/60 backdrop-blur-md p-4 animate-fade-in">
+      <div className="bg-white w-full max-w-md p-10 shadow-2xl relative animate-fade-in-up">
+        {/* Gold Accent Line */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-ocean via-gold to-ocean"></div>
+
+        <div className="text-center mb-8">
+           <div className="inline-block p-4 rounded-full bg-gray-50 mb-4 text-gold text-3xl shadow-sm">
+             <i className="fa-solid fa-cookie-bite"></i>
+           </div>
+           <h4 className="font-serif font-bold text-2xl text-ocean mb-3">
+             {t('cookie.title', lang)} 
+           </h4>
+           <p className="text-gray-500 text-sm leading-7">
+             {t('cookie.text', lang)}
+           </p>
+        </div>
+        
+        <div className="space-y-4">
+          <button 
+            onClick={() => handleConsent('true')} 
+            className="w-full bg-ocean text-white py-4 font-bold uppercase tracking-[0.2em] text-xs hover:bg-gold hover:text-ocean transition-all duration-300 shadow-lg transform hover:-translate-y-0.5"
+          >
             {t('cookie.accept', lang)}
           </button>
+          
+          <div className="flex justify-between border-t border-gray-100 pt-4">
+            <button 
+              onClick={() => handleConsent('false')} 
+              className="text-gray-400 text-xs font-bold uppercase tracking-wider hover:text-red-500 transition-colors px-2"
+            >
+              {t('cookie.decline', lang)}
+            </button>
+            <button 
+              onClick={() => navigateTo('TERMS')} 
+              className="text-ocean text-xs font-bold uppercase tracking-wider hover:text-gold transition-colors px-2 flex items-center gap-2"
+            >
+              {t('cookie.policy', lang)} <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -302,7 +336,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, setCurren
         {children}
       </main>
       <Footer currentLang={currentLang} navigateTo={setCurrentPage} />
-      <CookieBanner lang={currentLang} />
+      <CookieBanner lang={currentLang} navigateTo={setCurrentPage} />
     </div>
   );
 };

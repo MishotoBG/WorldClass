@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { AppData, Destination, BlogPost, PageView } from '../types';
 import { t, l, c } from '../utils/i18n';
@@ -115,7 +116,7 @@ export const HomePage: React.FC<PageProps> = ({ data, navigateTo, lang }) => {
             />
             <div className="text-left">
               <p className="font-bold text-gold">James Harrington</p>
-              <p className="text-xs text-gray-400 uppercase tracking-widest">Verified Client</p>
+              <p className="text-xs text-gray-400 uppercase tracking-widest">{t('contact.verified', lang)}</p>
             </div>
           </div>
         </div>
@@ -134,27 +135,32 @@ export const AboutPage: React.FC<PageProps> = ({ data, lang }) => {
       />
       
       <div className="container mx-auto px-6 py-16 max-w-4xl">
-        <h2 className="text-3xl font-serif text-ocean mb-6">Our Story</h2>
+        <h2 className="text-3xl font-serif text-ocean mb-6">{t('about.story', lang)}</h2>
         <p className="text-gray-600 leading-8 mb-12 text-lg">
           {c(data, 'aboutText', lang)}
         </p>
 
-        <h2 className="text-3xl font-serif text-ocean mb-6">Our Mission</h2>
+        <h2 className="text-3xl font-serif text-ocean mb-6">{t('about.mission', lang)}</h2>
         <p className="text-gray-600 leading-8 mb-16 text-lg">
           {c(data, 'missionText', lang)}
         </p>
 
-        <h2 className="text-3xl font-serif text-ocean mb-10 text-center">The Team</h2>
+        <h2 className="text-3xl font-serif text-ocean mb-10 text-center">{t('about.team', lang)}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="text-center">
+          {/* Replaced broken source.unsplash with static IDs */}
+          {[
+            { id: 1, img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=300&auto=format&fit=crop', name: 'Elena Rossi' },
+            { id: 2, img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300&auto=format&fit=crop', name: 'Marc Dubois' },
+            { id: 3, img: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop', name: 'Sarah Jenkins' }
+          ].map((member) => (
+            <div key={member.id} className="text-center">
               <img 
-                src={`https://source.unsplash.com/random/300x300/?portrait,business,${i}`} 
+                src={member.img} 
                 alt="Team Member" 
                 className="w-40 h-40 rounded-full mx-auto mb-4 object-cover grayscale hover:grayscale-0 transition-all duration-500"
               />
-              <h4 className="font-bold text-ocean">Elena Rossi</h4>
-              <p className="text-gold text-sm uppercase tracking-widest">Senior Travel Designer</p>
+              <h4 className="font-bold text-ocean">{member.name}</h4>
+              <p className="text-gold text-sm uppercase tracking-widest">{t('about.role', lang)}</p>
             </div>
           ))}
         </div>
@@ -308,7 +314,7 @@ export const ServicesPage: React.FC<{lang: string}> = ({ lang }) => {
         
         {/* Process / Content Filler */}
         <div className="mt-24 max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-serif text-ocean mb-12">How We Work</h2>
+          <h2 className="text-3xl font-serif text-ocean mb-12">{t('services.how_work', lang)}</h2>
           <div className="flex flex-col md:flex-row gap-8 justify-center relative">
              {/* Connector Line (Desktop) */}
              <div className="hidden md:block absolute top-8 left-10 right-10 h-0.5 bg-gray-200 z-0"></div>
@@ -319,10 +325,10 @@ export const ServicesPage: React.FC<{lang: string}> = ({ lang }) => {
                    {step}
                  </div>
                  <h4 className="font-bold text-lg mb-2">
-                   {step === 1 ? 'Consultation' : step === 2 ? 'Curation' : 'Experience'}
+                   {t(`services.step${step}_t`, lang)}
                  </h4>
                  <p className="text-sm text-gray-500 px-4">
-                   {step === 1 ? 'We discuss your desires and requirements.' : step === 2 ? 'We design a bespoke itinerary.' : 'You enjoy a seamless journey.'}
+                   {t(`services.step${step}_d`, lang)}
                  </p>
                </div>
              ))}
@@ -611,7 +617,7 @@ export const ContactPage: React.FC<{ lang: string }> = ({ lang }) => {
                       </div>
                     </div>
                     <div className="w-24">
-                       <label className="block text-xs font-bold uppercase text-gray-500 mb-1">Answer <span className="text-red-500">*</span></label>
+                       <label className="block text-xs font-bold uppercase text-gray-500 mb-1">{t('contact.answer', lang)} <span className="text-red-500">*</span></label>
                        <input 
                         type="number" 
                         name="captchaInput" 
@@ -653,7 +659,7 @@ export const ContactPage: React.FC<{ lang: string }> = ({ lang }) => {
              <div className="absolute inset-0 bg-gradient-to-r from-ocean via-ocean/50 to-transparent"></div>
              
              <div className="relative z-10 p-12 text-white max-w-md">
-                <h4 className="font-serif text-4xl mb-6">Global Headquarters</h4>
+                <h4 className="font-serif text-4xl mb-6">{t('contact.hq_title', lang)}</h4>
                 <div className="space-y-6 text-lg font-light">
                   <p className="flex items-start gap-4">
                     <i className="fa-solid fa-location-dot mt-1 text-gold"></i>
@@ -670,7 +676,7 @@ export const ContactPage: React.FC<{ lang: string }> = ({ lang }) => {
                 </div>
                 
                 <div className="mt-12 pt-12 border-t border-white/20">
-                  <p className="text-sm text-gray-300 mb-4 uppercase tracking-widest">Follow our journey</p>
+                  <p className="text-sm text-gray-300 mb-4 uppercase tracking-widest">{t('contact.follow', lang)}</p>
                   <div className="flex gap-6 text-2xl">
                     <i className="fa-brands fa-instagram hover:text-gold cursor-pointer transition-colors"></i>
                     <i className="fa-brands fa-twitter hover:text-gold cursor-pointer transition-colors"></i>

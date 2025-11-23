@@ -1,8 +1,10 @@
 
+
 import React, { useState } from 'react';
 import { AppData, Destination, BlogPost, SiteConfig, Language, ContentStatus } from '../types';
 import { generateDestinationDescription } from '../services/geminiService';
 import { generateSlug } from '../utils/helpers';
+import { t } from '../utils/i18n';
 
 interface AdminProps {
   data: AppData;
@@ -15,14 +17,26 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
   const [isAuth, setIsAuth] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  // Admin interface language state
+  const [adminLang, setAdminLang] = useState('en');
 
   // Login Handler
   if (!isAuth) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
         <div className="bg-white p-8 max-w-md w-full shadow-2xl">
-          <h2 className="text-3xl font-serif text-ocean mb-2 text-center">Admin Access</h2>
-          <p className="text-center text-gray-500 mb-8 text-sm">Please login to continue</p>
+          <div className="flex justify-end mb-4">
+             <select 
+              value={adminLang} 
+              onChange={(e) => setAdminLang(e.target.value)}
+              className="text-sm border rounded p-1"
+             >
+               <option value="en">English</option>
+               <option value="bg">Български</option>
+             </select>
+          </div>
+          <h2 className="text-3xl font-serif text-ocean mb-2 text-center">{t('admin.login_title', adminLang)}</h2>
+          <p className="text-center text-gray-500 mb-8 text-sm">{t('admin.login_sub', adminLang)}</p>
           <form onSubmit={(e) => {
             e.preventDefault();
             if (username === 'admin' && password === 'admin') setIsAuth(true);
@@ -31,20 +45,20 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
             <div className="space-y-4">
               <input 
                 type="text" 
-                placeholder="Username" 
+                placeholder={t('admin.username', adminLang)}
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full border p-3 focus:border-gold outline-none"
               />
               <input 
                 type="password" 
-                placeholder="Password" 
+                placeholder={t('admin.password', adminLang)}
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full border p-3 focus:border-gold outline-none"
               />
               <button type="submit" className="w-full bg-ocean text-white py-3 font-bold uppercase tracking-widest hover:bg-gold transition">
-                Login
+                {t('admin.login_btn', adminLang)}
               </button>
             </div>
           </form>
@@ -72,16 +86,16 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
-      <aside className="w-64 bg-ocean text-white hidden md:block">
+      <aside className="w-64 bg-ocean text-white hidden md:flex flex-col">
         <div className="p-6 text-2xl font-serif font-bold text-center border-b border-gray-800">
-          <i className="fa-solid fa-gauge mr-2 text-gold"></i> Dashboard
+          <i className="fa-solid fa-gauge mr-2 text-gold"></i> {t('admin.dashboard', adminLang)}
         </div>
-        <nav className="mt-6">
+        <nav className="mt-6 flex-1">
           {[
-            { id: 'OVERVIEW', icon: 'fa-chart-line', label: 'Overview' },
-            { id: 'DESTINATIONS', icon: 'fa-plane', label: 'Destinations' },
-            { id: 'BLOG', icon: 'fa-newspaper', label: 'Blog Posts' },
-            { id: 'SETTINGS', icon: 'fa-cog', label: 'Settings' },
+            { id: 'OVERVIEW', icon: 'fa-chart-line', label: t('admin.overview', adminLang) },
+            { id: 'DESTINATIONS', icon: 'fa-plane', label: t('admin.manage_dest', adminLang) },
+            { id: 'BLOG', icon: 'fa-newspaper', label: t('admin.manage_blog', adminLang) },
+            { id: 'SETTINGS', icon: 'fa-cog', label: t('admin.settings', adminLang) },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -92,9 +106,23 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
             </button>
           ))}
         </nav>
-        <div className="absolute bottom-0 w-64 p-6 border-t border-gray-800">
-          <button onClick={onLogout} className="text-gray-400 hover:text-white flex items-center gap-2">
-            <i className="fa-solid fa-sign-out-alt"></i> Logout
+        
+        {/* Admin Language Switcher in Sidebar */}
+        <div className="px-6 py-4 border-t border-gray-800">
+           <label className="text-xs text-gray-500 uppercase font-bold block mb-2">{t('admin.menu', adminLang)} Language</label>
+           <select 
+              value={adminLang} 
+              onChange={(e) => setAdminLang(e.target.value)}
+              className="w-full bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm"
+             >
+               <option value="en">English</option>
+               <option value="bg">Български</option>
+             </select>
+        </div>
+
+        <div className="p-6 border-t border-gray-800">
+          <button onClick={onLogout} className="text-gray-400 hover:text-white flex items-center gap-2 w-full">
+            <i className="fa-solid fa-sign-out-alt"></i> {t('admin.logout', adminLang)}
           </button>
         </div>
       </aside>
@@ -103,26 +131,26 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
       <main className="flex-1 overflow-y-auto h-screen p-8">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-serif text-gray-800">
-            {activeTab === 'OVERVIEW' && 'Welcome Back'}
-            {activeTab === 'DESTINATIONS' && 'Manage Destinations'}
-            {activeTab === 'BLOG' && 'Manage Blog'}
-            {activeTab === 'SETTINGS' && 'Site Configuration'}
+            {activeTab === 'OVERVIEW' && t('admin.welcome', adminLang)}
+            {activeTab === 'DESTINATIONS' && t('admin.manage_dests_title', adminLang)}
+            {activeTab === 'BLOG' && t('admin.manage_blog_title', adminLang)}
+            {activeTab === 'SETTINGS' && t('admin.site_config', adminLang)}
           </h1>
-          <button className="md:hidden bg-ocean text-white p-2 rounded">Menu</button>
+          <button className="md:hidden bg-ocean text-white p-2 rounded">{t('admin.menu', adminLang)}</button>
         </header>
 
         {activeTab === 'OVERVIEW' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 shadow-sm border-t-4 border-gold">
-              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">Total Visitors</h3>
+              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">{t('admin.visitors', adminLang)}</h3>
               <p className="text-4xl font-bold text-ocean mt-2">{data.stats.visitors.toLocaleString()}</p>
             </div>
             <div className="bg-white p-6 shadow-sm border-t-4 border-green-500">
-              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">Active Bookings</h3>
+              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">{t('admin.bookings', adminLang)}</h3>
               <p className="text-4xl font-bold text-ocean mt-2">{data.stats.bookings}</p>
             </div>
             <div className="bg-white p-6 shadow-sm border-t-4 border-blue-500">
-              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">Destinations Listed</h3>
+              <h3 className="text-gray-500 uppercase text-xs font-bold tracking-widest">{t('admin.listed', adminLang)}</h3>
               <p className="text-4xl font-bold text-ocean mt-2">{data.destinations.length}</p>
             </div>
           </div>
@@ -133,6 +161,7 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
             destinations={data.destinations} 
             languages={data.config.supportedLanguages}
             onSave={(newDests) => updateData({ destinations: newDests })}
+            adminLang={adminLang}
           />
         )}
 
@@ -152,22 +181,23 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
                        title,
                        excerpt: 'New draft post...',
                        date: new Date().toLocaleDateString(),
-                       image: 'https://source.unsplash.com/random/800x600/?travel'
+                       // Replaced broken source.unsplash
+                       image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop'
                      };
                      updateData({ posts: [...data.posts, newPost] });
                    }
                  }}
                >
-                 + Add Post
+                 {t('admin.add_post', adminLang)}
                </button>
              </div>
              <table className="w-full text-left border-collapse">
                <thead>
                  <tr className="border-b text-sm text-gray-500 uppercase">
-                   <th className="py-3">Status</th>
-                   <th className="py-3">Title</th>
-                   <th className="py-3">Date</th>
-                   <th className="py-3 text-right">Actions</th>
+                   <th className="py-3">{t('admin.status', adminLang)}</th>
+                   <th className="py-3">{t('admin.title', adminLang)}</th>
+                   <th className="py-3">{t('admin.date', adminLang)}</th>
+                   <th className="py-3 text-right">{t('admin.actions', adminLang)}</th>
                  </tr>
                </thead>
                <tbody>
@@ -175,7 +205,7 @@ export const AdminDashboard: React.FC<AdminProps> = ({ data, updateData, onLogou
                    <tr key={post.id} className="border-b border-gray-100 hover:bg-gray-50">
                      <td className="py-4">
                         <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded ${post.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
-                          {post.status}
+                          {post.status === 'published' ? t('admin.published', adminLang) : t('admin.draft', adminLang)}
                         </span>
                      </td>
                      <td className="py-4 font-medium text-ocean">
@@ -218,7 +248,8 @@ const DestinationManager: React.FC<{
   destinations: Destination[]; 
   languages: Language[];
   onSave: (d: Destination[]) => void;
-}> = ({ destinations, languages, onSave }) => {
+  adminLang: string;
+}> = ({ destinations, languages, onSave, adminLang }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Destination>>({});
   const [editLang, setEditLang] = useState('en'); // 'en' or 'bg' etc
@@ -312,7 +343,8 @@ const DestinationManager: React.FC<{
         id: Date.now().toString(), 
         slug: formData.slug || generateSlug(formData.name || ''),
         status: formData.status || 'draft',
-        image: formData.image || 'https://source.unsplash.com/random/800x600/?travel' 
+        // Replaced broken source.unsplash
+        image: formData.image || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop' 
       } as Destination;
       onSave([...destinations, newDest]);
     }
@@ -325,7 +357,7 @@ const DestinationManager: React.FC<{
       {/* Form */}
       <div className="bg-white p-6 shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold">{editingId ? 'Edit Destination' : 'Add New Destination'}</h3>
+          <h3 className="text-lg font-bold">{editingId ? t('admin.edit_dest', adminLang) : t('admin.add_dest', adminLang)}</h3>
           <div className="flex gap-2 bg-gray-100 p-1 rounded">
             {languages.map(lang => (
               <button
@@ -343,7 +375,7 @@ const DestinationManager: React.FC<{
         
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="md:col-span-1">
-             <label className="text-xs text-gray-500 font-bold uppercase">Name</label>
+             <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.name', adminLang)}</label>
              <input 
                 className="border p-2 rounded w-full" 
                 placeholder={`Name (${editLang})`} 
@@ -354,7 +386,7 @@ const DestinationManager: React.FC<{
           </div>
           
           <div className="md:col-span-1">
-             <label className="text-xs text-gray-500 font-bold uppercase">Region</label>
+             <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.region', adminLang)}</label>
              <input 
               className="border p-2 rounded w-full" 
               placeholder={`Region (${editLang})`}
@@ -368,7 +400,7 @@ const DestinationManager: React.FC<{
           {editLang === 'en' && (
             <>
               <div className="md:col-span-1">
-                <label className="text-xs text-gray-500 font-bold uppercase">Slug (URL)</label>
+                <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.slug', adminLang)}</label>
                 <input 
                   className="border p-2 rounded w-full bg-gray-50" 
                   placeholder="url-slug" 
@@ -377,7 +409,7 @@ const DestinationManager: React.FC<{
                 />
               </div>
                <div className="md:col-span-1">
-                <label className="text-xs text-gray-500 font-bold uppercase">Status</label>
+                <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.status', adminLang)}</label>
                 <select 
                   className="border p-2 rounded w-full"
                   value={formData.status || 'draft'}
@@ -389,7 +421,7 @@ const DestinationManager: React.FC<{
               </div>
               
               <div className="md:col-span-1">
-                <label className="text-xs text-gray-500 font-bold uppercase">Price</label>
+                <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.price', adminLang)}</label>
                 <input 
                   className="border p-2 rounded w-full" 
                   placeholder="Price (USD)" 
@@ -399,7 +431,7 @@ const DestinationManager: React.FC<{
                 />
               </div>
               <div className="md:col-span-1">
-                <label className="text-xs text-gray-500 font-bold uppercase">Type</label>
+                <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.type', adminLang)}</label>
                 <select 
                   className="border p-2 rounded w-full" 
                   value={formData.type || 'Luxury'} 
@@ -412,7 +444,7 @@ const DestinationManager: React.FC<{
                 </select>
               </div>
               <div className="md:col-span-2">
-                 <label className="text-xs text-gray-500 font-bold uppercase">Image URL</label>
+                 <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.image_url', adminLang)}</label>
                  <input 
                   className="border p-2 rounded w-full" 
                   placeholder="Image URL" 
@@ -424,7 +456,7 @@ const DestinationManager: React.FC<{
           )}
           
           <div className="md:col-span-2 relative">
-             <label className="text-xs text-gray-500 font-bold uppercase">Description</label>
+             <label className="text-xs text-gray-500 font-bold uppercase">{t('admin.desc', adminLang)}</label>
              <textarea 
               className="border p-2 rounded w-full h-24" 
               placeholder={`Description (${editLang})`}
@@ -439,13 +471,15 @@ const DestinationManager: React.FC<{
               className="absolute right-2 bottom-2 bg-purple-600 text-white text-xs px-2 py-1 rounded hover:bg-purple-700 flex items-center gap-1"
             >
               {isGenerating ? <i className="fa-solid fa-spinner fa-spin"></i> : <i className="fa-solid fa-wand-magic-sparkles"></i>}
-              AI Generate ({editLang.toUpperCase()})
+              {t('admin.ai_gen', adminLang)} ({editLang.toUpperCase()})
             </button>
           </div>
           
           <div className="md:col-span-2 flex gap-2">
-            <button type="submit" className="bg-gold text-ocean px-6 py-2 font-bold uppercase text-sm rounded">{editingId ? 'Update' : 'Create'}</button>
-            {editingId && <button type="button" onClick={() => {setEditingId(null); setFormData({});}} className="text-gray-500 px-6 py-2">Cancel</button>}
+            <button type="submit" className="bg-gold text-ocean px-6 py-2 font-bold uppercase text-sm rounded">
+              {editingId ? t('admin.update', adminLang) : t('admin.create', adminLang)}
+            </button>
+            {editingId && <button type="button" onClick={() => {setEditingId(null); setFormData({});}} className="text-gray-500 px-6 py-2">{t('admin.cancel', adminLang)}</button>}
           </div>
         </form>
         {editLang !== 'en' && <p className="text-xs text-gray-400 mt-2">* Editing translation for {editLang.toUpperCase()}. Shared fields (Status, Slug, Price, Type, Image) must be edited in EN.</p>}
@@ -460,7 +494,7 @@ const DestinationManager: React.FC<{
               <div className="flex items-center gap-2">
                 <h4 className="font-bold text-ocean">{dest.name}</h4>
                  <span className={`text-[10px] uppercase font-bold px-1 rounded ${dest.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
-                  {dest.status || 'draft'}
+                  {dest.status === 'published' ? t('admin.published', adminLang) : t('admin.draft', adminLang)}
                 </span>
               </div>
               <p className="text-xs text-gray-500">Slug: /{dest.slug}</p>
